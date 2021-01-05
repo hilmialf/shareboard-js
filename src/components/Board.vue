@@ -1,90 +1,110 @@
 <template>
-<div ref="boardWrapper" class="board-wrapper">
-  <canvas :height="`${canvasRes.y}px`" :width="`${canvasRes.x}px`" @mousedown="onMouseDown($event)" @mousemove="onMouseMove($event)" @mouseup="onMouseUp($event)" class="board" id="board">
-
-  </canvas>
-</div>
+  <div ref="boardWrapper" class="board-wrapper">
+    <canvas
+      :height="`${canvasRes.y}px`"
+      :width="`${canvasRes.x}px`"
+      @mousedown="onMouseDown($event)"
+      @mousemove="onMouseMove($event)"
+      @mouseup="onMouseUp($event)"
+      class="board"
+      id="board"
+    >
+    </canvas>
+  </div>
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from "vuex";
 export default {
-  data(){
+  data() {
     return {
-      canvasRes: { // in px
-        x: 1920,
-        y: 1080
+      canvasRes: {
+        // in px
+        x: 2560,
+        y: 1440,
       },
-      canvasSize: { // in px
-        x: 800,
-        y: 500,
+      canvasSize: {
+        // in px
+        x: 1280,
+        y: 720,
       },
       ctx: null,
       drawing: false,
       current: {
         x: 0,
-        y: 0
+        y: 0,
       },
       bounds: null,
-    }
+    };
   },
-  computed:{
-    scale(){
+  computed: {
+    scale() {
       return {
-        x: this.canvasRes.x/this.canvasSize.x,
-        y: this.canvasRes.y/this.canvasSize.y
-      }
+        x: this.canvasRes.x / this.canvasSize.x,
+        y: this.canvasRes.y / this.canvasSize.y,
+      };
     },
     ...mapState({
-      activeColor: state => state.board.activeColor,
-      activeTool: state => state.board.activeTool
-    })
-    
+      activeColor: (state) => state.board.activeColor,
+      activeTool: (state) => state.board.activeTool,
+    }),
   },
   methods: {
-    onMouseDown(e){
+    onMouseDown(e) {
       this.drawing = true;
-      this.current.x = e.offsetX*this.scale.x;
-      this.current.y = e.offsetY*this.scale.y;
+      this.current.x = e.offsetX * this.scale.x;
+      this.current.y = e.offsetY * this.scale.y;
     },
 
-    onMouseMove(e){
+    onMouseMove(e) {
       let next = {
-        x: e.offsetX*this.scale.x,
-        y: e.offsetY*this.scale.y
+        x: e.offsetX * this.scale.x,
+        y: e.offsetY * this.scale.y,
+      };
+      if (!this.drawing) {
+        return;
       }
-      if (!this.drawing) { return; }
-      this.activeTool.action(this.ctx, {cur: this.current, next: next, color: this.activeColor})
+      this.activeTool.action(this.ctx, {
+        cur: this.current,
+        next: next,
+        color: this.activeColor,
+      });
       this.current.x = next.x;
       this.current.y = next.y;
     },
 
-    onMouseUp(e){
-      if (!this.drawing) { return; }
-      let next = {
-        x: e.offsetX*this.scale.x,
-        y: e.offsetY*this.scale.y
+    onMouseUp(e) {
+      if (!this.drawing) {
+        return;
       }
+      let next = {
+        x: e.offsetX * this.scale.x,
+        y: e.offsetY * this.scale.y,
+      };
       this.drawing = false;
-      this.activeTool.action(this.ctx, {cur: this.current, next: next, color: this.activeColor})
+      this.activeTool.action(this.ctx, {
+        cur: this.current,
+        next: next,
+        color: this.activeColor,
+      });
     },
   },
-  mounted(){
+  mounted() {
     let c = document.getElementById("board");
     this.$refs.boardWrapper.style.width = `${this.canvasSize.x}px`;
     this.$refs.boardWrapper.style.height = `${this.canvasSize.y}px`;
     this.ctx = c.getContext("2d");
-    this.bounds = c.getBoundingClientRect()
-  }
-}
+    this.bounds = c.getBoundingClientRect();
+  },
+};
 </script>
 
 <style scoped>
-.board-wrapper{
+.board-wrapper {
   height: 500px;
   width: 800px;
 }
-.board{
+.board {
   border-style: solid;
   height: 100%;
   width: 100%;
