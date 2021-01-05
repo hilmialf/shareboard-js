@@ -7,7 +7,7 @@
 </template>
 
 <script>
-
+import {mapState} from 'vuex'
 export default {
   data(){
     return {
@@ -34,37 +34,39 @@ export default {
         x: this.canvasRes.x/this.canvasSize.x,
         y: this.canvasRes.y/this.canvasSize.y
       }
-    }
+    },
+    ...mapState({
+      activeColor: state => state.board.activeColor,
+      activeTool: state => state.board.activeTool
+    })
+    
   },
   methods: {
-    draw(x0, y0, x1, y1){
-      console.log({x0,y0,x1,y1})
-      this.ctx.beginPath();
-      this.ctx.moveTo(x0*this.scale.x, y0*this.scale.y);
-      this.ctx.lineTo(x1*this.scale.x, y1*this.scale.y);
-      this.ctx.strokeStyle = "red";
-      this.ctx.lineWidth = 5;
-      this.ctx.stroke();
-      this.ctx.closePath();
-    },
     onMouseDown(e){
-      console.log(e)
       this.drawing = true;
-      this.current.x = e.offsetX;
-      this.current.y = e.offsetY;
+      this.current.x = e.offsetX*this.scale.x;
+      this.current.y = e.offsetY*this.scale.y;
     },
 
     onMouseMove(e){
+      let next = {
+        x: e.offsetX*this.scale.x,
+        y: e.offsetY*this.scale.y
+      }
       if (!this.drawing) { return; }
-      this.draw(this.current.x, this.current.y, e.offsetX, e.offsetY);
-      this.current.x = e.offsetX;
-      this.current.y = e.offsetY;
+      this.activeTool.action(this.ctx, {cur: this.current, next: next, color: this.activeColor})
+      this.current.x = next.x;
+      this.current.y = next.y;
     },
 
     onMouseUp(e){
       if (!this.drawing) { return; }
+      let next = {
+        x: e.offsetX*this.scale.x,
+        y: e.offsetY*this.scale.y
+      }
       this.drawing = false;
-      this.draw(this.current.x, this.current.y, e.offsetX, e.offsetY);
+      this.activeTool.action(this.ctx, {cur: this.current, next: next, color: this.activeColor})
     },
   },
   mounted(){

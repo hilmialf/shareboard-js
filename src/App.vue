@@ -1,23 +1,17 @@
 <template>
   <div id="app">
-    <div class="container">
-    <color-picker></color-picker>
-    <board></board>
-
-    </div>
+    <drawing-area></drawing-area>
   </div>
 </template>
 
 <script>
-import Board from './components/Board'
-import ColorPicker from './components/ColorPicker.vue'
+import DrawingArea from './components/DrawingArea.vue'
+
 
 export default {
+  components: { DrawingArea },
   name: 'App',
-  components: {
-    Board,
-    ColorPicker
-  }
+  
 }
 </script>
 
@@ -31,8 +25,4 @@ export default {
   margin-top: 60px;
 }
 
-.container{
-  display: flex;
-  justify-content: center;
-}
 </style>
