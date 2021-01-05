@@ -5,14 +5,12 @@
 </template>
 
 <script>
-import DrawingArea from './components/DrawingArea.vue'
-
+import DrawingArea from "./components/DrawingArea.vue";
 
 export default {
   components: { DrawingArea },
-  name: 'App',
-  
-}
+  name: "App"
+};
 </script>
 
 <style>
@@ -24,5 +22,4 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-
 </style>

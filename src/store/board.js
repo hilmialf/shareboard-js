@@ -1,13 +1,13 @@
 const board = {
   namespaced: true,
-  state:{
+  state: {
     activeColor: {
-      name: 'red',
-      hex: '#cc0000'
+      name: "red",
+      hex: "#cc0000"
     },
     activeTool: {
-      name: 'pen',
-      action(ctx, {cur, next, color}){
+      name: "pen",
+      action(ctx, { cur, next, color }) {
         ctx.beginPath();
         ctx.moveTo(cur.x, cur.y);
         ctx.lineTo(next.x, next.y);
@@ -20,13 +20,13 @@ const board = {
   },
   actions: {},
   mutations: {
-    setPenColor(state, payload){
-      state.activeColor = payload
+    setPenColor(state, payload) {
+      state.activeColor = payload;
     },
-    setTool(state, payload){
-      state.activeTool = payload
+    setTool(state, payload) {
+      state.activeTool = payload;
     }
   }
-}
+};
 
 export default board;

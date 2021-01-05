@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import Board from './Board'
-import ToolBar from './ToolBar.vue'
-import ColorPicker from './tools/ColorPicker.vue'
+import Board from "./Board";
+import ToolBar from "./ToolBar.vue";
+import ColorPicker from "./tools/ColorPicker.vue";
 
 export default {
   components: {
@@ -17,16 +17,16 @@ export default {
     ColorPicker,
     ToolBar
   }
-}
+};
 </script>
 
 <style scoped>
-  .drawing-area{
-    display: flex;
-    justify-content: center;
-  }
+.drawing-area {
+  display: flex;
+  justify-content: center;
+}
 
-  .tes{
-    margin-right: auto;
-  }
+.tes {
+  margin-right: auto;
+}
 </style>
