@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <drawing-area></drawing-area>
-  </div>
+  </v-app>
 </template>
 
 <script>

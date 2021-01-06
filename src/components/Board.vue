@@ -46,7 +46,8 @@ export default {
     },
     ...mapState({
       activeColor: state => state.board.activeColor,
-      activeTool: state => state.board.activeTool
+      activeTool: state => state.board.activeTool,
+      activeSize: state => state.board.activeSize
     })
   },
   methods: {
@@ -67,7 +68,8 @@ export default {
       this.activeTool.action(this.ctx, {
         cur: this.current,
         next: next,
-        color: this.activeColor
+        color: this.activeColor,
+        size: this.activeSize
       });
       this.current.x = next.x;
       this.current.y = next.y;
@@ -85,7 +87,8 @@ export default {
       this.activeTool.action(this.ctx, {
         cur: this.current,
         next: next,
-        color: this.activeColor
+        color: this.activeColor,
+        size: this.activeSize
       });
     }
   },

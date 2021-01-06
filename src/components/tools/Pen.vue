@@ -1,16 +1,36 @@
 <template>
   <div class="tool">
-    <fa-icon
-      :icon="['fas', 'pen']"
-      class="tool-icon"
-      :class="[isActive ? 'active' : 'inactive']"
-      @click="setTool(tool)"
-    />
+    <v-menu v-model="isMenuOpen" offset-x :style="{ 'flex-direction': 'row' }">
+      <template v-slot:activator="{ attrs }">
+        <v-btn
+          :class="[isActive ? 'active' : '']"
+          large
+          icon
+          :color="activeColor"
+          @click="setTool"
+          v-bind="attrs"
+        >
+          <v-icon large>mdi-pen</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item v-for="(color, index) in colors" :key="index">
+          <v-list-item-title>
+            <v-btn
+              icon
+              :style="{ background: color.hex }"
+              @click="setPenColor(color)"
+            >
+            </v-btn>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </div>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
@@ -25,37 +45,47 @@ export default {
           ctx.stroke();
           ctx.closePath();
         }
-      }
+      },
+      isMenuOpen: false,
+      colors: [
+        {
+          name: "black",
+          hex: "#000000"
+        },
+        {
+          name: "red",
+          hex: "#cc0000"
+        },
+        {
+          name: "blue",
+          hex: "#0000ff"
+        }
+      ]
     };
   },
   methods: {
     ...mapMutations({
-      setTool: "board/setTool"
-    })
+      setPenColor: "board/setPenColor"
+    }),
+    setTool() {
+      if (this.isActive) {
+        this.isMenuOpen = !this.isMenuOpen;
+      } else {
+        this.$store.commit("board/setTool", this.tool);
+      }
+    }
   },
   computed: {
     isActive() {
       return this.$store.state.board.activeTool.name === this.tool.name;
-    }
+    },
+    ...mapState({ activeColor: state => state.board.activeColor.hex })
   }
 };
 </script>
 
 <style scoped>
 .active {
-  background: burlywood;
-}
-
-.inactive {
-  background: #ffc0c0;
-}
-.tool-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 100px;
-  vertical-align: middle;
-  padding: 10px;
+  background: #e0e0e0;
 }
 </style>

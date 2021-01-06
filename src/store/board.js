@@ -2,8 +2,12 @@ const board = {
   namespaced: true,
   state: {
     activeColor: {
-      name: "red",
-      hex: "#cc0000"
+      name: "black",
+      hex: "#000000"
+    },
+    activeSize: {
+      name: "small",
+      diameter: 20
     },
     activeTool: {
       name: "pen",
@@ -22,6 +26,9 @@ const board = {
   mutations: {
     setPenColor(state, payload) {
       state.activeColor = payload;
+    },
+    setEraserSize(state, payload) {
+      state.activeSize = payload;
     },
     setTool(state, payload) {
       state.activeTool = payload;

@@ -18,7 +18,6 @@ export default {
 .toolbar {
   align-self: center;
   border-radius: 40px;
-  background-color: beige;
   height: 150px;
   width: 80px;
   display: flex;
