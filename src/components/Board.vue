@@ -45,12 +45,19 @@ export default {
       };
     },
     ...mapState({
-      activeColor: state => state.board.activeColor,
+      tools: state => state.global.tools,
       activeTool: state => state.board.activeTool,
-      activeSize: state => state.board.activeSize
+      activeColor: state => state.global.penColors[state.board.activeColor],
+      activeSize: state => state.global.eraserSizes[state.board.activeSize]
     })
   },
   methods: {
+    draw(tool, payload) {
+      this.tools[tool].action(this.ctx, payload);
+    },
+    broadcast(tool, payload) {
+      this.$socket().emit("draw", { tool, payload });
+    },
     onMouseDown(e) {
       this.drawing = true;
       this.current.x = e.offsetX * this.scale.x;
@@ -65,7 +72,13 @@ export default {
       if (!this.drawing) {
         return;
       }
-      this.activeTool.action(this.ctx, {
+      this.draw(this.activeTool, {
+        cur: this.current,
+        next: next,
+        color: this.activeColor,
+        size: this.activeSize
+      });
+      this.broadcast(this.activeTool, {
         cur: this.current,
         next: next,
         color: this.activeColor,
@@ -84,7 +97,7 @@ export default {
         y: e.offsetY * this.scale.y
       };
       this.drawing = false;
-      this.activeTool.action(this.ctx, {
+      this.draw(this.activeTool, {
         cur: this.current,
         next: next,
         color: this.activeColor,
@@ -98,6 +111,9 @@ export default {
     this.$refs.boardWrapper.style.height = `${this.canvasSize.y}px`;
     this.ctx = c.getContext("2d");
     this.bounds = c.getBoundingClientRect();
+    this.$socket().on("draw", ({ tool, payload }) => {
+      this.draw(tool, payload);
+    });
   }
 };
 </script>

@@ -18,8 +18,8 @@
           <v-list-item-title>
             <v-btn
               icon
-              :style="{ background: color.hex }"
-              @click="setPenColor(color)"
+              :style="{ background: color }"
+              @click="setPenColor(index)"
             >
             </v-btn>
           </v-list-item-title>
@@ -30,37 +30,12 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
-      tool: {
-        name: "pen",
-        action(ctx, { cur, next, color }) {
-          ctx.beginPath();
-          ctx.moveTo(cur.x, cur.y);
-          ctx.lineTo(next.x, next.y);
-          ctx.strokeStyle = color.hex;
-          ctx.lineWidth = 5;
-          ctx.stroke();
-          ctx.closePath();
-        }
-      },
-      isMenuOpen: false,
-      colors: [
-        {
-          name: "black",
-          hex: "#000000"
-        },
-        {
-          name: "red",
-          hex: "#cc0000"
-        },
-        {
-          name: "blue",
-          hex: "#0000ff"
-        }
-      ]
+      name: "pen",
+      isMenuOpen: false
     };
   },
   methods: {
@@ -71,15 +46,22 @@ export default {
       if (this.isActive) {
         this.isMenuOpen = !this.isMenuOpen;
       } else {
-        this.$store.commit("board/setTool", this.tool);
+        this.$store.commit("board/setTool", this.name);
       }
     }
   },
   computed: {
     isActive() {
-      return this.$store.state.board.activeTool.name === this.tool.name;
+      return this.$store.state.board.activeTool === this.name;
     },
-    ...mapState({ activeColor: state => state.board.activeColor.hex })
+    colors() {
+      return this.$store.state.global.penColors;
+    },
+    activeColor() {
+      return this.$store.state.global.penColors[
+        this.$store.state.board.activeColor
+      ];
+    }
   }
 };
 </script>

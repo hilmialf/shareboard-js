@@ -14,15 +14,14 @@
         </v-btn>
       </template>
       <v-list>
-        <v-list-item v-for="(size, index) in renderedSizes" :key="index">
+        <v-list-item v-for="(size, index) in sizes" :key="index">
           <v-list-item-title>
-            <v-btn @click="setEraserSize(size)" icon large class="my-2">
+            <v-btn @click="setEraserSize(index)" icon large class="my-2">
               <div
-                :class="[size.isActive ? 'active-size' : '']"
+                :class="[index === activeSize ? 'active-size' : '']"
                 :style="{
-                  background: lightblue,
-                  width: `${size.diameter}px`,
-                  height: `${size.diameter}px`,
+                  width: `${size}px`,
+                  height: `${size}px`,
                   background: `lightblue`,
                   'border-radius': `50%`
                 }"
@@ -36,32 +35,12 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   data() {
     return {
-      tool: {
-        name: "eraser",
-        action(ctx, { cur, size }) {
-          let clearSize = size.diameter * 2;
-          ctx.clearRect(cur.x, cur.y, clearSize, clearSize);
-        }
-      },
-      isMenuOpen: false,
-      sizes: [
-        {
-          name: "small",
-          diameter: 20
-        },
-        {
-          name: "medium",
-          diameter: 30
-        },
-        {
-          name: "large",
-          diameter: 40
-        }
-      ]
+      name: "eraser",
+      isMenuOpen: false
     };
   },
   methods: {
@@ -69,21 +48,19 @@ export default {
       if (this.isActive) {
         this.isMenuOpen = !this.isMenuOpen;
       } else {
-        this.$store.commit("board/setTool", this.tool);
+        this.$store.commit("board/setTool", this.name);
       }
     },
     ...mapMutations({ setEraserSize: "board/setEraserSize" })
   },
   computed: {
     isActive() {
-      return this.$store.state.board.activeTool.name === this.tool.name;
+      return this.$store.state.board.activeTool === this.name;
     },
-    renderedSizes() {
-      return this.sizes.map(size => ({
-        ...size,
-        isActive: this.$store.state.board.activeSize.name === size.name
-      }));
-    }
+    ...mapState({
+      sizes: state => state.global.eraserSizes,
+      activeSize: state => state.board.activeSize
+    })
   }
 };
 </script>
